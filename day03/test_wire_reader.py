@@ -1,26 +1,44 @@
-from wire_reader import wire_instructions_to_set
+from wire_reader import WireReader
+from helpers import Coord
 
+### These are for the simple (part a) functionality
 
 def test_empty_instructions_give_central_point():
-    points_visited = wire_instructions_to_set([])
-    assert points_visited == set([(0, 0)])
+    reader = WireReader([])
+    reader.points_visited
+    assert reader.points_visited == set([(0, 0)])
 
 
 def test_go_one_right():
-    points_visited = wire_instructions_to_set(['R1'])
-    assert points_visited == set([(0, 0), (1, 0)])
+    reader = WireReader(['R1'])
+    assert reader.points_visited == set([(0, 0), (1, 0)])
 
 
 def test_go_one_up():
-    points_visited = wire_instructions_to_set(['U1'])
-    assert points_visited == set([(0, 0), (0, 1)])
+    reader = WireReader(['U1'])
+    assert reader.points_visited == set([(0, 0), (0, 1)])
 
 
 def test_go_two_right():
-    points_visited = wire_instructions_to_set(['R2'])
-    assert points_visited == set([(0, 0), (1, 0), (2, 0)])
+    reader = WireReader(['R2'])
+    assert reader.points_visited == set([(0, 0), (1, 0), (2, 0)])
 
 
 def test_go_two_right_then_one_up():
-    points_visited = wire_instructions_to_set(['R2', 'U1'])
-    assert points_visited == set([(0, 0), (1, 0), (2, 0), (2, 1)])
+    reader = WireReader(['R2', 'U1'])
+    assert reader.points_visited == set([(0, 0), (1, 0), (2, 0), (2, 1)])
+
+### These are for the more complex (part b) functionality
+
+
+def test_first_visited_coord_has_count_1():
+    reader = WireReader(['R1'])
+    assert reader.get_step_count(Coord(1, 0)) == 1
+
+
+def test_visiting_again_doesnt_update():
+    reader = WireReader(['R2', 'L3'])
+    assert reader.get_step_count(Coord(0, 0)) == 0
+    assert reader.get_step_count(Coord(1, 0)) == 1
+    assert reader.get_step_count(Coord(2, 0)) == 2
+    assert reader.get_step_count(Coord(-1, 0)) == 5
