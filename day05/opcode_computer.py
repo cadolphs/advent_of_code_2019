@@ -21,30 +21,22 @@ class OpcodeComputer:
         self.memory[1], self.memory[2] = noun, verb
 
     def run(self):
-        '''Execute the program currently in the memory, until a 99 opcode is encountered.
-        
-        Note: As time goes on and more instructiosn get added, we would probably refactor this. Create 
-        a class for the various instructions and have them be responsible for computing the correct results.
-        
-        The "switch" statement for the opcodes would be put into a factory class / factory method that creates 
-        instruction objects.'''
-        
+        '''Execute the program currently in the memory, until we halt.'''
+
         while True:
-            # Note: Right now we don't have to worry about endless loops, because the current program
-            # doesn't jump around.
             instruction = self.instruction_factory.load_instruction(self.instruction_pointer)
             try:
                 instruction.execute()
             except ProgramTerminatedException as e:
                 print(f"Program terminated with opcode {e.args[0]}")
                 return
-    
+
             self.update_instruction_pointer(instruction.num_args())
 
     def set_instruction_pointer(self, new_ptr):
         self._jumped = True
         self.instruction_pointer = new_ptr
-    
+
     def update_instruction_pointer(self, num_args):
         if self._jumped:
             self._jumped = False
