@@ -8,7 +8,6 @@ class OpcodeComputer:
         '''Initialize with program, given as a list of integers'''
         self.memory = program
         self.instruction_pointer = 0
-        self.running = False
         self.instruction_factory = InstructionFactory(self)
 
     def set_inputs(self, noun, verb):
@@ -26,19 +25,21 @@ class OpcodeComputer:
         
         The "switch" statement for the opcodes would be put into a factory class / factory method that creates 
         instruction objects.'''
-        self.running = True
-        while self.running:
+        
+        while True:
             # Note: Right now we don't have to worry about endless loops, because the current program
             # doesn't jump around.
             instruction = self.instruction_factory.load_instruction(self.instruction_pointer)
-            instruction.execute()
-            if not self.running:
+            try:
+                instruction.execute()
+            except ProgramTerminatedException as e:
+                print(f"Program terminated with opcode {e.args[0]}")
                 return
-            else:
-                self.instruction_pointer += 4
+    
+            self.instruction_pointer += 1 + instruction.num_args()
 
     def halt(self):
-        self.running = False
+        raise ProgramTerminatedException(0)
 
     @property
     def output(self):
@@ -53,3 +54,7 @@ class OpcodeComputer:
 
     def put(self, addr, value):
         self.memory[addr] = value
+
+
+class ProgramTerminatedException(Exception):
+    pass
