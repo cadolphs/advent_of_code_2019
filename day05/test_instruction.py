@@ -5,7 +5,7 @@ import pytest
 
 def test_halt_instruction_calls_program_halt():
     opcode_computer = Mock()
-    halt_instruction = HaltInstruction(opcode_computer)
+    halt_instruction = HaltInstruction(opcode_computer, ())
 
     halt_instruction.execute()
 
@@ -38,7 +38,7 @@ def test_addition_instruction_puts_sum_to_address(stub_computer):
     addr_orig2 = 5
     addr_target = 10
 
-    addition_instruction = AddInstruction(opcode_computer, addr_orig1, addr_orig2, addr_target)
+    addition_instruction = AddInstruction(opcode_computer, [addr_orig1, addr_orig2, addr_target])
     addition_instruction.execute()
 
     opcode_computer.put.assert_called_with(10, 100)
@@ -51,7 +51,7 @@ def test_mult_instruciton_puts_difference_to_address(stub_computer):
     addr_orig2 = 5
     addr_target = 10
 
-    subtraction_instruction = MultInstruction(opcode_computer, addr_orig1, addr_orig2, addr_target)
+    subtraction_instruction = MultInstruction(opcode_computer, [addr_orig1, addr_orig2, addr_target])
     subtraction_instruction.execute()
 
     opcode_computer.put.assert_called_with(10, 42 * 58)
@@ -62,7 +62,7 @@ def test_input_instruction_asks_computer_for_input():
     opcode_computer.read_input = Mock(return_value=55)
 
     addr_target = 10
-    input_instruction = InputInstruction(opcode_computer, addr_target)
+    input_instruction = InputInstruction(opcode_computer, [addr_target])
 
     input_instruction.execute()
 

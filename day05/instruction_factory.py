@@ -19,4 +19,4 @@ class InstructionFactory:
 
         args = self.computer[pos + 1:pos + num_args + 1]
 
-        return InstructionClass(self.computer, *args)
+        return InstructionClass(self.computer, args)

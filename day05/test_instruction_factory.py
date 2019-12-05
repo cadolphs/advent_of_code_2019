@@ -20,9 +20,7 @@ def test_1_makes_add_instruction():
     instr = factory.load_instruction(0)
 
     assert isinstance(instr, AddInstruction)
-    assert instr.addr_src_1 == 2
-    assert instr.addr_src_2 == 3
-    assert instr.addr_tgt == 0
+    assert instr.params == [2, 3, 0]
 
 
 def test_2_makes_mult_instruction():
@@ -32,6 +30,4 @@ def test_2_makes_mult_instruction():
     instr = factory.load_instruction(0)
 
     assert isinstance(instr, MultInstruction)
-    assert instr.addr_src_1 == 2
-    assert instr.addr_src_2 == 3
-    assert instr.addr_tgt == 0
+    assert instr.params == [2, 3, 0]
