@@ -10,6 +10,7 @@ class Instruction(metaclass=ABCMeta):
         self.computer = computer
         self.params = params
 
+
     @classmethod
     @abstractmethod
     def num_args(cls):
@@ -19,6 +20,15 @@ class Instruction(metaclass=ABCMeta):
     def execute(self):
         pass
 
+    def get_param_value(self, param_idx):
+        param = self.params[param_idx]
+        if param.mode == 0:
+            return self.computer.get(param.value)
+        elif param.mode == 1:
+            return param.value
+        else:
+            raise ValueError("Invalid parameter mode")
+            
 
 class HaltInstruction(Instruction):
     def execute(self):
@@ -32,12 +42,13 @@ class HaltInstruction(Instruction):
 class DyadicOperation(Instruction):
 
     def execute(self):
-        op1 = self.computer.get(self.params[0])
-        op2 = self.computer.get(self.params[1])
+        op1 = self.get_param_value(0)
+        op2 = self.get_param_value(1)
 
         res = self.func(op1, op2)
 
-        self.computer.put(self.params[2], res)
+        addr_tgt = self.params[2].value
+        self.computer.put(addr_tgt, res)
 
     @abstractmethod
     def func(self, op1, op2):
@@ -62,7 +73,8 @@ class InputInstruction(Instruction):
 
     def execute(self):
         input_value = self.computer.read_input()
-        self.computer.put(self.params[0], input_value)
+        addr_tgt = self.params[0].value
+        self.computer.put(addr_tgt, input_value)
 
     @classmethod
     def num_args(cls):
@@ -72,9 +84,49 @@ class InputInstruction(Instruction):
 class OutputInstruction(Instruction):
 
     def execute(self):
-        val = self.computer[self.params[0]]
+        val = self.get_param_value(0)
         self.computer.output(val)
 
     @classmethod
     def num_args(cls):
         return 1
+
+
+class JumpIfTrueInstruction(Instruction):
+
+    @classmethod
+    def num_args(cls):
+        return 2
+
+    def execute(self):
+        if self.get_param_value(0) != 0:
+            self.computer.set_instruction_pointer(self.get_param_value(1))
+
+
+class JumpIfFalseInstruction(Instruction):
+
+    @classmethod
+    def num_args(cls):
+        return 2
+
+    def execute(self):
+        if self.get_param_value(0) == 0:
+            self.computer.set_instruction_pointer(self.get_param_value(1))
+
+
+class LessThanInstruction(DyadicOperation):
+    def func(self, op1, op2):
+        return 1 if op1 < op2 else 0
+
+
+class EqualsInstruction(DyadicOperation):
+    def func(self, op1, op2):
+        return 1 if op1 == op2 else 0
+
+class Param:
+    def __init__(self, value, mode=0):
+        self.value = value
+        self.mode = mode
+
+    def __eq__(self, o):
+        return self.value == o.value and self.mode == o.mode

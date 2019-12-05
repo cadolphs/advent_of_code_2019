@@ -11,6 +11,7 @@ class OpcodeComputer:
         self.instruction_factory = InstructionFactory(self)
         self.input_src = input_src
         self.output = output
+        self._jumped = False
 
     def set_inputs(self, noun, verb):
         '''Provide inputs in the form of a (noun, verb) tuple.
@@ -38,7 +39,18 @@ class OpcodeComputer:
                 print(f"Program terminated with opcode {e.args[0]}")
                 return
     
-            self.instruction_pointer += 1 + instruction.num_args()
+            self.update_instruction_pointer(instruction.num_args())
+
+    def set_instruction_pointer(self, new_ptr):
+        self._jumped = True
+        self.instruction_pointer = new_ptr
+    
+    def update_instruction_pointer(self, num_args):
+        if self._jumped:
+            self._jumped = False
+            return
+
+        self.instruction_pointer += num_args + 1
 
     def halt(self):
         raise ProgramTerminatedException(0)
