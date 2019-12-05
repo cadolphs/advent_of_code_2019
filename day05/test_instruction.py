@@ -1,4 +1,4 @@
-from instruction import HaltInstruction, AddInstruction, MultInstruction
+from instruction import HaltInstruction, AddInstruction, MultInstruction, InputInstruction
 from unittest.mock import Mock
 import pytest
 
@@ -23,6 +23,9 @@ def stub_computer():
 
         def put(self, addr, value):
             pass
+
+        def read_input(self):
+            return 66
 
     return StubComputer()
 
@@ -52,3 +55,16 @@ def test_mult_instruciton_puts_difference_to_address(stub_computer):
     subtraction_instruction.execute()
 
     opcode_computer.put.assert_called_with(10, 42 * 58)
+
+
+def test_input_instruction_asks_computer_for_input():
+    opcode_computer = Mock()
+    opcode_computer.read_input = Mock(return_value=55)
+
+    addr_target = 10
+    input_instruction = InputInstruction(opcode_computer, addr_target)
+
+    input_instruction.execute()
+
+    assert opcode_computer.read_input.called is True
+    opcode_computer.put.assert_called_with(10, 55)

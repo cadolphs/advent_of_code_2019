@@ -4,11 +4,13 @@ from instruction_factory import InstructionFactory
 class OpcodeComputer:
     '''Class representing our Integer Computer'''
 
-    def __init__(self, program):
+    def __init__(self, program, input_src=None, output=None):
         '''Initialize with program, given as a list of integers'''
         self.memory = program
         self.instruction_pointer = 0
         self.instruction_factory = InstructionFactory(self)
+        self.input_src = input_src
+        self.output = output
 
     def set_inputs(self, noun, verb):
         '''Provide inputs in the form of a (noun, verb) tuple.
@@ -41,11 +43,6 @@ class OpcodeComputer:
     def halt(self):
         raise ProgramTerminatedException(0)
 
-    @property
-    def output(self):
-        '''The output of the program is considered to be whatever sits at position 0 in the memory.'''
-        return self.memory[0]
-
     def __getitem__(self, key):
         return self.memory[key]
 
@@ -54,6 +51,9 @@ class OpcodeComputer:
 
     def put(self, addr, value):
         self.memory[addr] = value
+
+    def read_input(self):
+        return next(self.input_src)
 
 
 class ProgramTerminatedException(Exception):

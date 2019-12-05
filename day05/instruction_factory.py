@@ -1,8 +1,10 @@
-from instruction import HaltInstruction, AddInstruction, MultInstruction
+from instruction import HaltInstruction, AddInstruction, MultInstruction, InputInstruction, OutputInstruction
 
 OPCODE_TYPES = {99: HaltInstruction,
                 1: AddInstruction,
-                2: MultInstruction}
+                2: MultInstruction,
+                3: InputInstruction,
+                4: OutputInstruction}
 
 
 class InstructionFactory:
