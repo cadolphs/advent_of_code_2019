@@ -11,16 +11,12 @@ class ThreadedComputer(OpcodeComputer):
 
     def start(self):
         self.thread = Thread(target=self.run)
-        print(f"Calling computer thread start")
         self.thread.start()
 
     def finish(self):
-        print("Waiting for thread to finish")
         self.thread.join()
-        print("Thread finished")
 
     def read_input(self):
-        print(f"read_input was called")
         return self.input_queue.get(block=True)
 
     def write_to_output(self, val):

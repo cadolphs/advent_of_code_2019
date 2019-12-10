@@ -2,10 +2,10 @@ from instruction_factory import InstructionFactory
 
 
 class OpcodeComputer:
-    '''Class representing our Integer Computer'''
+    """Class representing our Integer Computer"""
 
     def __init__(self, program, input_src=None, output=None):
-        '''Initialize with program, given as a list of integers'''
+        """Initialize with program, given as a list of integers"""
         self.memory = program
         self.instruction_pointer = 0
         self.instruction_factory = InstructionFactory(self)
@@ -14,21 +14,22 @@ class OpcodeComputer:
         self._jumped = False
 
     def set_inputs(self, noun, verb):
-        '''Provide inputs in the form of a (noun, verb) tuple.
+        """Provide inputs in the form of a (noun, verb) tuple.
 
         Inputs are written into memory positions 1 and 2
-        '''
+        """
         self.memory[1], self.memory[2] = noun, verb
 
     def run(self):
-        '''Execute the program currently in the memory, until we halt.'''
+        """Execute the program currently in the memory, until we halt."""
 
         while True:
-            instruction = self.instruction_factory.load_instruction(self.instruction_pointer)
+            instruction = self.instruction_factory.load_instruction(
+                self.instruction_pointer
+            )
             try:
                 instruction.execute()
-            except ProgramTerminatedException as e:
-                print(f"Program terminated with opcode {e.args[0]}")
+            except ProgramTerminatedException:
                 return
 
             self.update_instruction_pointer(instruction.num_args())

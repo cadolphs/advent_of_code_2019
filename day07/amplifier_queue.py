@@ -16,7 +16,6 @@ class AmplifierQueue:
             yield self.input_for_computers[n]
 
         def output_setter(n, val):
-            print(f"Outputting {val} as input for computer {n+1}")
             self.input_for_computers[n + 1] = val
 
         for i in range(self.num_computers):
@@ -25,7 +24,6 @@ class AmplifierQueue:
 
     def run(self):
         for computer in self.computers:
-            print(computer)
             computer.run()
 
     def get_output(self):
