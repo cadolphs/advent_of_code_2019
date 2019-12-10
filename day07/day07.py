@@ -3,7 +3,7 @@ from amplifier_queue import AmplifierQueue
 from itertools import permutations
 
 data = get_data(day=7)
-program = list(map(int, data.split(',')))
+program = list(map(int, data.split(",")))
 
 max_output = 0
 max_permutation = None

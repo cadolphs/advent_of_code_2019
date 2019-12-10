@@ -1,13 +1,15 @@
 from opcode_computer import OpcodeComputer
 from functools import partial
 
-class AmplifierQueue:
 
+class AmplifierQueue:
     def __init__(self, program, phase_settings):
         self.num_computers = len(phase_settings)
 
         self.input_for_computers = [0] * (self.num_computers + 1)
-        self.computers = [OpcodeComputer(list(program)) for _ in range(self.num_computers)]
+        self.computers = [
+            OpcodeComputer(list(program)) for _ in range(self.num_computers)
+        ]
 
         def input_getter(n):
             yield phase_settings[n]
@@ -15,7 +17,7 @@ class AmplifierQueue:
 
         def output_setter(n, val):
             print(f"Outputting {val} as input for computer {n+1}")
-            self.input_for_computers[n+1] = val
+            self.input_for_computers[n + 1] = val
 
         for i in range(self.num_computers):
             self.computers[i].input_src = input_getter(i)
