@@ -7,6 +7,7 @@
 # First piece of functionality: Read in the asteroids.
 from helpers import Coord
 from asteroid_map import AsteroidMap, BestStationFinder
+from laser import Laser
 import pytest
 
 
@@ -86,3 +87,42 @@ def test_end_to_end(case):
     best_station_finder = BestStationFinder(asteroid_map)
 
     assert best_station_finder.find_best_station() == expected
+
+
+def laser_test():
+    map_string = """.#....#####...#..
+##...##.#####..##
+##...#...#.#####.
+..#.....#...###..
+..#.#.....#....##
+"""
+    laser_pos = Coord(8, 3)
+
+    return AsteroidMap.from_string(map_string), laser_pos
+
+
+def test_first_thing_laser_shoots_is_correct():
+    amap, laser_pos = laser_test()
+
+    laser = Laser(amap, laser_pos)
+
+    asteroid_hit = laser.fire()
+
+    assert asteroid_hit == Coord(8, 1)
+
+
+def test_laser_rotates_to_hit_next_thing():
+    amap, laser_pos = laser_test()
+
+    laser = Laser(amap, laser_pos)
+
+    asteroid_hit = laser.fire()
+    laser.rotate_to_next_asteroid()
+    asteroid_hit = laser.fire()
+    laser.rotate_to_next_asteroid()
+
+    assert asteroid_hit == Coord(9, 0)
+
+    asteroid_hit = laser.fire()
+
+    assert asteroid_hit == Coord(9, 1)

@@ -18,6 +18,9 @@ class AsteroidMap:
         valid = (0 <= pos.x < self.shape[0]) and (0 <= pos.y < self.shape[1])
         return valid
 
+    def remove_asteroid(self, pos):
+        self.asteroid_positions.remove(pos)
+
     @classmethod
     def from_string(cls, map_string):
         rows = map_string.split("\n")
