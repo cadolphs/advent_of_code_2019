@@ -6,7 +6,7 @@
 
 # First piece of functionality: Read in the asteroids.
 from helpers import Coord
-from asteroid_map import AsteroidMap
+from asteroid_map import AsteroidMap, BestStationFinder
 import pytest
 
 
@@ -64,23 +64,25 @@ def case4():
 def test_simple_collision():
     map_string = "#..#..#"
     asteroid_map = AsteroidMap.from_string(map_string)
+    best_station_finder = BestStationFinder(asteroid_map)
+    best_station_finder._remove_asteroids_not_seen_from(Coord(0, 0))
 
-    asteroid_map._remove_asteroids_not_seen_from(Coord(0, 0))
-
-    assert asteroid_map._seen_by[Coord(0, 0)] == set([Coord(3, 0)])
+    assert best_station_finder._seen_by[Coord(0, 0)] == set([Coord(3, 0)])
 
 
 def test_more_granular():
     map_string, expected = case3()
     asteroid_map = AsteroidMap.from_string(map_string)
+    best_station_finder = BestStationFinder(asteroid_map)
 
-    asteroid_map._remove_asteroids_in_line_of(Coord(7, 3), Coord(7, 5))
-    assert Coord(7, 6) not in asteroid_map._seen_by[Coord(7, 3)]
+    best_station_finder._remove_asteroids_in_line_of(Coord(7, 3), Coord(7, 5))
+    assert Coord(7, 6) not in best_station_finder._seen_by[Coord(7, 3)]
 
 
 @pytest.mark.parametrize("case", [case2, case3, case4])
 def test_end_to_end(case):
     map_string, expected = case()
     asteroid_map = AsteroidMap.from_string(map_string)
+    best_station_finder = BestStationFinder(asteroid_map)
 
-    assert asteroid_map.find_best_station() == expected
+    assert best_station_finder.find_best_station() == expected
