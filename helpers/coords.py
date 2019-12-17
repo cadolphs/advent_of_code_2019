@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from math import gcd
+from math import gcd, sqrt, atan2, pi
 
 
 @dataclass(frozen=True)
@@ -10,6 +10,10 @@ class Coord:
     @property
     def manhattan(self):
         return abs(self.x) + abs(self.y)
+
+    @property
+    def norm2(self):
+        return sqrt(self.x ** 2 + self.y ** 2)
 
     def __add__(self, o):
         return Coord(self.x + o.x, self.y + o.y)
@@ -47,3 +51,17 @@ class Coord:
 
         factor = gcd(self.x, self.y)
         return self // factor
+
+    def angle_with(self, o):
+        """Return angle, in interval 0, 2pi, between this coord and the other coord"""
+        # A bit hacky but this should work:
+        vec_a = (self.x / self.norm2, self.y / self.norm2)
+        vec_b = (o.x / o.norm2, o.y / o.norm2)
+
+        signed_angle = atan2(
+            vec_a[0] * vec_b[1] - vec_a[1] * vec_b[0],
+            vec_a[0] * vec_b[0] + vec_a[1] * vec_b[1],
+        )
+        if signed_angle < 0:
+            signed_angle += 2 * pi
+        return signed_angle
